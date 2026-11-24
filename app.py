@@ -429,7 +429,69 @@ def tampilkan_graf(
     st.pyplot(fig, use_container_width=True)
     plt.close(fig)
 
+# ==========================================
+# KETERANGAN NILAI SETIAP ALGORITMA
+# ==========================================
 
+def tampilkan_keterangan(algoritma):
+
+    keterangan_nilai = {
+        "BFS": [
+            ("Level", "Jumlah langkah atau sisi dari titik awal menuju node yang sedang diperiksa."),
+            ("Prinsip", "BFS memeriksa node berdasarkan tingkat kedalaman, mulai dari level terdekat.")
+        ],
+
+        "DFS": [
+            ("Kedalaman", "Jumlah langkah atau sisi dari titik awal menuju posisi terakhir pada jalur aktif."),
+            ("Prinsip", "DFS menelusuri satu cabang sedalam mungkin. Jika tidak menemukan tujuan, pencarian kembali ke node sebelumnya (backtracking).")
+        ],
+
+        "UCS": [
+            ("Cost (g)", "Total bobot jalur dari titik awal sampai node yang sedang diperiksa."),
+            ("Prinsip", "UCS memilih node dengan total bobot jalur paling kecil.")
+        ],
+
+        "A*": [
+            ("g(n) - Biaya Aktual", "Total bobot jalur dari titik awal sampai node saat ini."),
+            ("h(n) - Heuristic", "Perkiraan biaya dari node saat ini menuju titik tujuan."),
+            ("f(n) - Nilai Evaluasi", "Jumlah biaya aktual dan perkiraan biaya menuju tujuan: f(n) = g(n) + h(n)."),
+            ("Prinsip", "A* memilih node dengan nilai f(n) paling kecil.")
+        ],
+
+        "Greedy": [
+            ("h(n) - Heuristic", "Perkiraan biaya dari node saat ini menuju titik tujuan."),
+            ("Prinsip", "Greedy memilih node dengan nilai heuristic paling kecil tanpa memperhitungkan total biaya yang sudah ditempuh.")
+        ]
+    }
+
+    st.markdown("#### 💡 Keterangan Nilai")
+
+    for judul, penjelasan in keterangan_nilai[algoritma]:
+
+        st.markdown(
+            f"""
+            <div style="
+                background:#F8FAFF;
+                border:1px solid #E2E8F0;
+                border-radius:9px;
+                padding:9px 12px;
+                margin-bottom:7px;
+            ">
+                <div style="
+                    color:#312E81;
+                    font-size:13px;
+                    font-weight:800;
+                    margin-bottom:3px;
+                ">{judul}</div>
+                <div style="
+                    color:#475569;
+                    font-size:12px;
+                    line-height:1.5;
+                ">{penjelasan}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 # ==========================================
 # 6. SESSION STATE
 # ==========================================
@@ -652,6 +714,8 @@ with kolom_tampilan:
                                 "Level Node",
                                 event["level"]
                             )
+                        
+                        tampilkan_keterangan("BFS")
 
                         st.info(
                             f"Sedang memeriksa: "
@@ -724,6 +788,7 @@ with kolom_tampilan:
                                 "Kedalaman Cabang",
                                 len(jalur_aktif) - 1
                             )
+                        tampilkan_keterangan("DFS")
 
                         if jenis == "visit":
 
@@ -836,6 +901,7 @@ with kolom_tampilan:
                                 "Total Bobot Sementara (g)",
                                 event["cost"]
                             )
+                        tampilkan_keterangan("UCS")
 
                         st.info(
                             f"🎯 UCS memilih node "
@@ -926,6 +992,7 @@ with kolom_tampilan:
                                 "Nilai Evaluasi (f)",
                                 event["f"]
                             )
+                        tampilkan_keterangan("A*")
 
                         st.info(
                             f"🎯 A* memilih node "
@@ -1010,6 +1077,7 @@ with kolom_tampilan:
                                 "Nilai Heuristic (h)",
                                 event["heuristic"]
                             )
+                        tampilkan_keterangan("Greedy")
 
                         st.info(
                             f"🎯 Greedy memilih node "
@@ -1120,6 +1188,44 @@ with kolom_tampilan:
                     path=hasil["path"],
                     visited=hasil["visited"]
                 )
+
+                st.markdown("#### 💡 Kesimpulan Pencarian")
+
+                kesimpulan = {
+                    "BFS": (
+                        "BFS melakukan pencarian secara melebar berdasarkan level. "
+                        "Algoritma ini menemukan jalur berdasarkan jumlah sisi "
+                        "paling sedikit, bukan total bobot terkecil."
+                    ),
+
+                    "DFS": (
+                        "DFS melakukan pencarian sedalam mungkin pada satu cabang "
+                        "sebelum melakukan backtracking untuk mencoba cabang lain. "
+                        "Hasil jalurnya bergantung pada urutan tetangga."
+                    ),
+
+                    "UCS": (
+                        "UCS memilih node berdasarkan total bobot perjalanan "
+                        "terkecil dari titik awal. Algoritma ini dapat menemukan "
+                        "jalur dengan total biaya minimum."
+                    ),
+
+                    "A*": (
+                        "A* memilih node berdasarkan gabungan biaya aktual "
+                        "dan perkiraan biaya menuju tujuan menggunakan rumus "
+                        "f(n) = g(n) + h(n)."
+                    ),
+
+                    "Greedy": (
+                        "Greedy memilih node berdasarkan nilai heuristic terkecil "
+                        "tanpa memperhitungkan total biaya yang sudah dikeluarkan. "
+                        "Karena itu, hasilnya belum tentu merupakan jalur dengan "
+                        "total bobot minimum."
+                    )
+                }
+
+                st.info(kesimpulan[algoritma_terpilih])
+
 
             else:
 
